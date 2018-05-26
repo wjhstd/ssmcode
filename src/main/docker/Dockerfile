@@ -1,18 +1,24 @@
-FROM microsoft/aspnetcore-build:2.0 AS build-env
-WORKDIR /app
+FROM  java:7-jre
+MAINTAINER "vip@qq.com"
 
-# copy csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
+# install MAVEN
+ADD apache-maven-3.3.9 /usr/local/maven3
+ENV MAVEN_HOME  /usr/local/maven3
+ENV PATH $PATH:$MAVEN_HOME/bin
+RUN mkdir -p $MAVEN_HOME
 
-# copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o out
+# install tomcat
+ADD apache-tomcat-7.0.68  /usr/local/tomcat7
+ENV CATALINA_HOME /usr/local/tomcat7
+ENV PATH $PATH:$CATALINA_HOME/bin
+RUN mkdir -p $CATALINA_HOME
 
-# build runtime image
-FROM microsoft/aspnetcore:2.0
-ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-WORKDIR /app
-COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "HouseCrawler.Web.dll"]
+WORKDIR $CATALINA_HOME
+
+# for test mvn command
+RUN mvn -version
+
+EXPOSE 8080
+
+# run shell:  sh catelina.sh run
+CMD ["/usr/local/tomcat7/bin/catalina.sh", "run"]
