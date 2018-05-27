@@ -22,7 +22,7 @@ public class UserController {
 
     @ResponseBody
     public String toIndex(){
-        //test
+        //test   
         User users = this.userService.getAll();
         return  users.toString();
     }
