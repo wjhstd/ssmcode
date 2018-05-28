@@ -12,6 +12,6 @@ public class CodessmApplication {
         SpringApplication.run(CodessmApplication.class, args);
     }
     public String getMessage(){
-        return "hello ityousee ggs";
+        return "hello ityousee ggsmm";
     }
 }
